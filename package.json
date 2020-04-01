@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js --ext js",
+    "prestart": "npm run lint",
     "test": "jest test",
     "lint": "eslint src"
   },
