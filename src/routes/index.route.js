@@ -4,9 +4,7 @@ const indexRouter = new Router()
 
 indexRouter.get('/', async ctx => {
   ctx.status = 200
-  ctx.body = {
-    status: 'OK'
-  }
+  ctx.body = '<h1>Search Engine</h1>'
 })
 
 module.exports = indexRouter
