@@ -21,11 +21,11 @@ module.exports = class {
     this.personalizations = personalizations
     this.configurations = {
       businessPartner: configurations.sociaEmpresaria,
-      activeSubscription: configurations.suscripcionActiva,
-      mdo: configurations.mdo,
-      rd: configurations.rd,
-      rdi: configurations.rdi,
-      rdr: configurations.rdr,
+      activeSubscription: configurations.suscripcionActiva.toLowerCase() === 'true',
+      mdo: configurations.mdo.toLowerCase() === 'true',
+      rd: configurations.rd.toLowerCase() === 'true',
+      rdi: configurations.rdi.toLowerCase() === 'true',
+      rdr: configurations.rdr.toLowerCase() === 'true',
       billingDay: configurations.diaFacturacion,
       isBilling: configurations.esFacturacion
     }
@@ -52,12 +52,11 @@ module.exports = class {
       this.order.type === ''
     ) return false
 
-    let json = `[{'${this.order.field.toLowerCase()}':'${this.order.type.toLowerCase()}'}, '_score']`
+    let json = `[{"${this.order.field.toLowerCase()}":"${this.order.type.toLowerCase()}"}, "_score"]`
 
-    if (this.order.toLowerCase() === 'orden') {
-      json = `[{'ordenEstrategia': 'asc'}, {'${this.order.field.toLowerCase()}':'${this.order.type.toLowerCase()}'}, '_score']`
+    if (this.order.field.toLowerCase() === 'orden') {
+      json = `[{"ordenEstrategia": "asc"}, {"${this.order.field.toLowerCase()}":"${this.order.type.toLowerCase()}"}, "_score"]`
     }
-
     return JSON.parse(json)
   }
 }

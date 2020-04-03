@@ -1,5 +1,5 @@
 module.exports = class {
   async execJob (params) {
-    return params
+    return params.sortValue
   }
 }
