@@ -7,40 +7,37 @@ module.exports = class {
     consultantCode,
     zoneCode,
     searchText,
-    quantityProducts,
-    businessPartner,
-    activeSubscription,
-    mdo,
-    rd,
-    rdi,
-    rdr,
-    billingDay,
     personalizations,
-    numberPage,
+    configurations,
+    pagination,
     order,
-    orderType,
-    filter,
-    isBilling
+    filter
   ) {
     this.country = country
     this.campaign = campaign
     this.consultantCode = consultantCode
     this.zoneCode = zoneCode
     this.textoBusqueda = searchText
-    this.quantityProducts = quantityProducts
-    this.businessPartner = businessPartner
-    this.activeSubscription = activeSubscription
-    this.mdo = mdo
-    this.rd = rd
-    this.rdi = rdi
-    this.rdr = rdr
-    this.billingDay = billingDay
     this.personalizations = personalizations
-    this.numberPage = numberPage
-    this.order = order
-    this.orderType = orderType
+    this.configurations = {
+      businessPartner: configurations.sociaEmpresaria,
+      activeSubscription: configurations.suscripcionActiva,
+      mdo: configurations.mdo,
+      rd: configurations.rd,
+      rdi: configurations.rdi,
+      rdr: configurations.rdr,
+      billingDay: configurations.diaFacturacion,
+      isBilling: configurations.esFacturacion
+    }
+    this.pagination = {
+      quantityProducts: pagination.cantidad,
+      numberPage: pagination.numeroPagina
+    }
+    this.order = {
+      field: order.campo,
+      type: order.tipo
+    }
     this.filter = filter
-    this.isBilling = isBilling
   }
 
   get fromValue () {
@@ -49,16 +46,16 @@ module.exports = class {
 
   get sortValue () {
     if (
-      validate.isUndefined(this.order) ||
-      this.order === '' ||
-      validate.isUndefined(this.orderType) ||
-      this.orderType === ''
+      validate.isUndefined(this.order.field) ||
+      this.order.field === '' ||
+      validate.isUndefined(this.order.type) ||
+      this.order.type === ''
     ) return false
 
-    let json = `[{'${this.order.toLowerCase()}':'${this.orderType.toLowerCase()}'}, '_score']`
+    let json = `[{'${this.order.field.toLowerCase()}':'${this.order.type.toLowerCase()}'}, '_score']`
 
     if (this.order.toLowerCase() === 'orden') {
-      json = `[{'ordenEstrategia': {'unmapped_type': 'integer'}}, {'${this.order.toLowerCase()}':'${this.orderType.toLowerCase()}'}, '_score']`
+      json = `[{'ordenEstrategia': 'asc'}, {'${this.order.field.toLowerCase()}':'${this.order.type.toLowerCase()}'}, '_score']`
     }
 
     return JSON.parse(json)
