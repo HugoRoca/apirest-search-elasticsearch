@@ -1,5 +1,9 @@
+const yenv = require('yenv')
+const env = yenv()
+
 exports.isArray = param => Array.isArray(param)
 exports.isBoolean = param => param === true || param === false || toString.call(param) === '[object Boolean]'
+exports.isCountryActive = param => env.ENABLED_COUNTRIES.some(x => x.toLowerCase() === param.toLowerCase())
 exports.isDefined = param => typeof param !== 'undefined' && param !== null
 exports.isFalse = param => this.isDefined(param) && param === false
 exports.isJson = str => {
