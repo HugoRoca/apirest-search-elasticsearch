@@ -33,6 +33,7 @@ module.exports = class {
     const indexName = this.getIndexName()
     return await this.getClient().search({
       index: indexName,
+      type: env.ELASTICSEARCH.INDEX_TYPE,
       body
     })
   }
