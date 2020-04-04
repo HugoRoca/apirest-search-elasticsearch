@@ -21,13 +21,16 @@
   },
   "homepage": "https://github.com/HugoRoca/apirest.elasticsearch.koa#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "elasticsearch": "^16.7.1",
+    "ioredis": "^4.16.1",
     "jest": "^25.2.4",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "koa-json": "^2.0.2",
     "koa-logger": "^3.2.1",
     "koa-router": "^8.0.8",
+    "mssql": "^6.2.0",
     "yenv": "^2.1.1"
   },
   "devDependencies": {
