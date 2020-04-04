@@ -21,7 +21,7 @@ searhEngineRouter.post(`${env.ENDPOINTS.SEARHENGINE}/:country/:campaign/:origin?
       ctx.request.body.orden,
       ctx.request.body.filtro
     )
-    ctx.body = await controller.execJob(searchEngineModel)
+    ctx.body = await controller.runSearch(searchEngineModel)
   } catch (error) {
     const origin = ctx.params.origin
     console.log(origin, error)
