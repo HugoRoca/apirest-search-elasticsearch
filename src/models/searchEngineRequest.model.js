@@ -1,4 +1,6 @@
 const validate = require('../utils/is')
+const yenv = require('yenv')
+const env = yenv()
 
 module.exports = class {
   constructor (
@@ -19,6 +21,7 @@ module.exports = class {
     this.zoneCode = zoneCode
     this.textoBusqueda = searchText
     this.personalizations = personalizations
+    this.personalizationsFilters = env.CONSTANTS.PERSONALIZATIONS
     this.configurations = {
       businessPartner: configurations.sociaEmpresaria,
       activeSubscription: configurations.suscripcionActiva.toLowerCase() === 'true',
