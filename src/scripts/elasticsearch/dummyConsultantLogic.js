@@ -8,9 +8,7 @@ module.exports = class {
 
   getAllLogicFilters () {
     this.params.personalizationsFilters = this.filterGND()
-    console.log('this.params.personalizationsFilters GND', this.params.personalizationsFilters)
     this.params.personalizationsFilters = this.filterLAN()
-    console.log('this.params.personalizationsFilters LAN', this.params.personalizationsFilters)
     return this.params.personalizationsFilters
   }
 
@@ -26,5 +24,14 @@ module.exports = class {
     if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.LAN) return this.params.personalizationsFilters
     if (!this.params.configurations.activeSubscription) return this.params.personalizationsFilters.filter((x) => x !== 'LAN')
     return this.params.personalizationsFilters
+  }
+
+  filterODD () {
+    if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.ODD) return this.params.personalizationsFilters
+    return this.params.personalizationsFilters.filter((x) => x !== 'ODD')
+  }
+
+  filterOPT () {
+
   }
 }

@@ -5,6 +5,12 @@ exports.isArray = param => Array.isArray(param)
 exports.isBoolean = param => param === true || param === false || toString.call(param) === '[object Boolean]'
 exports.isCountryActive = param => env.ENABLED_COUNTRIES.some(x => x.toLowerCase() === param.toLowerCase())
 exports.isDefined = param => typeof param !== 'undefined' && param !== null
+exports.idDummy = (listPersonalization, typePersonalization) => {
+  if (this.isUndefined(listPersonalization) || listPersonalization === '') return false
+  if (listPersonalization === 'XYZ') return true
+  const dummy = listPersonalization.indexOf(typePersonalization)
+  return !(dummy > -1)
+}
 exports.isFalse = param => this.isDefined(param) && param === false
 exports.isJson = str => {
   if (!str || str === null) {
