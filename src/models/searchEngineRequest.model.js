@@ -1,4 +1,5 @@
-const validate = require('../utils/is')
+// eslint-disable-next-line no-unused-vars
+const _ = require('lodash')
 const yenv = require('yenv')
 const env = yenv()
 
@@ -49,9 +50,9 @@ module.exports = class {
 
   get sortValue () {
     if (
-      validate.isUndefined(this.order.field) ||
+      _.isUndefined(this.order.field) ||
       this.order.field === '' ||
-      validate.isUndefined(this.order.type) ||
+      _.isUndefined(this.order.type) ||
       this.order.type === ''
     ) return false
 

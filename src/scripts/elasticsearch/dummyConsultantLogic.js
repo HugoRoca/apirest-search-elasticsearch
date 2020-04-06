@@ -1,3 +1,4 @@
+const validate = require('../../utils/is')
 const yenv = require('yenv')
 const env = yenv()
 
@@ -10,10 +11,11 @@ module.exports = class {
     let personalizationsFilters = this.params.personalizationsFilters
     for (let i = 0; i < personalizationsFilters.length; i++) {
       const item = personalizationsFilters[i]
-
+      const isDummy =
 
 
     }
+
     this.params.personalizationsFilters = this.filterGND()
     this.params.personalizationsFilters = this.filterLAN()
     return this.params.personalizationsFilters
@@ -26,6 +28,14 @@ module.exports = class {
      this.params.configurations.activeSubscription) return this.params.personalizationsFilters.filter((x) => x !== 'GND')
     return this.params.personalizationsFilters
   }
+
+  excludeLogicFilterGND () {
+    if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.GND) return false
+    if (this.params.configurations.businessPartner === '1') return true
+    if (this.params.configurations.businessPartner === '1' && this.params.configurations.activeSubscription) return true
+    return false
+  }
+
 
   filterLAN () {
     if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.LAN) return this.params.personalizationsFilters
