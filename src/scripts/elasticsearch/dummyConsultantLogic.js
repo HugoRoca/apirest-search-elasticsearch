@@ -7,6 +7,13 @@ module.exports = class {
   }
 
   getAllLogicFilters () {
+    let personalizationsFilters = this.params.personalizationsFilters
+    for (let i = 0; i < personalizationsFilters.length; i++) {
+      const item = personalizationsFilters[i]
+
+
+
+    }
     this.params.personalizationsFilters = this.filterGND()
     this.params.personalizationsFilters = this.filterLAN()
     return this.params.personalizationsFilters
