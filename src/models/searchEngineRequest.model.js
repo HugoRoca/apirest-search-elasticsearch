@@ -1,7 +1,5 @@
 // eslint-disable-next-line no-unused-vars
 const _ = require('lodash')
-const yenv = require('yenv')
-const env = yenv()
 
 module.exports = class {
   constructor (
@@ -22,7 +20,6 @@ module.exports = class {
     this.zoneCode = zoneCode
     this.textoBusqueda = searchText
     this.personalizations = personalizations
-    this.personalizationsFilters = env.CONSTANTS.PERSONALIZATIONS
     this.configurations = {
       businessPartner: configurations.sociaEmpresaria,
       activeSubscription: configurations.suscripcionActiva.toLowerCase() === 'true',
