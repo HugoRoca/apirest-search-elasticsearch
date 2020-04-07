@@ -19,7 +19,7 @@ module.exports = class {
     this.consultantCode = consultantCode
     this.zoneCode = zoneCode
     this.textoBusqueda = searchText
-    this.personalizations = personalizations
+    this.personalizationsDummy = personalizations
     this.configurations = {
       businessPartner: configurations.sociaEmpresaria,
       activeSubscription: configurations.suscripcionActiva.toLowerCase() === 'true',

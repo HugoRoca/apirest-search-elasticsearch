@@ -86,7 +86,7 @@ module.exports = class {
   }
 
   getConsultantCodeOrDummy (personalization) {
-    if (validate.isDummy(this.params.personalization, personalization)) {
+    if (validate.isDummy(this.params.personalizationsDummy, personalization)) {
       return { terms: { codigoConsultora: [this.consultantCodes.DUMMY, this.consultantCodes.FORCED] } }
     } else {
       return { terms: { codigoConsultora: [this.consultantCodes.CONSULTAN_CODE, this.consultantCodes.DUMMY, this.consultantCodes.FORCED] } }
