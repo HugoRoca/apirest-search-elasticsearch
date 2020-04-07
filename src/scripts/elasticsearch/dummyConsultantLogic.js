@@ -10,53 +10,72 @@ module.exports = class {
     this.params = params
     this.listPersonalizations = env.CONSTANTS.PERSONALIZATIONS
     this.configurations = params.configurations
-  }
-
-  getQueryConsultantDummy () {
-    const consultantCodes = {
+    this.consultantCodes = {
       CONSULTAN_CODE: this.params.consultantCode,
       ZERO: env.CONSTANTS.CONSULTING_CODES.ZERO,
       DUMMY: env.CONSTANTS.CONSULTING_CODES.DUMMY,
       FORCED: env.CONSTANTS.CONSULTING_CODES.FORCED
     }
+  }
+
+  getQueryConsultantDummy () {
     const should = []
+    let LogicOPMAndOPTInLoop = true
     for (let i = 0; i < this.listPersonalizations.length; i++) {
       const personalization = this.listPersonalizations[i]
       let must = [{ term: { tipoPersonalizacion: personalization } }]
-      let excludePAD = false
-
-      if (this.personalizationHasLogicDummy(personalization)) {
-        console.log(personalization, 'true')
+      if (this.personalizationIsActiveLogicDummy(personalization)) {
         switch (personalization) {
+          case 'GND':
+            if (!this.GNDLogicDummy()) {
+              must.push(this.getConsultantCodeOrDummy(personalization))
+            }
+            break
+          case 'LAN':
+            if (!this.LANLogicDummy()) {
+              must.push(this.getConsultantCodeOrDummy(personalization))
+            }
+            break
           case 'ODD':
             must.push({ term: { diaInicio: this.configurations.billingDay } })
+            must.push(this.getConsultantCodeOrDummy(personalization))
             break
           case 'SR':
-            must.push({ term: { revistaDigital: 0 } })
+            if (this.SRLogicDummy()) {
+              must.push({ term: { revistaDigital: 0 } })
+              must.push(this.getConsultantCodeOrDummy(personalization))
+            } else {
+              must.push(this.getConsultantCodeOrDummy(personalization))
+            }
             break
           case 'OPT':
-          case 'PAD':
           case 'OPM':
-            if (this.configurations.rd && this.configurations.mdo && !this.configurations.activeSubscription && !excludePAD) {
-              must = [{ terms: { tipoPersonalizacion: [personalization, 'PAD'] } }, { term: { revistaDigital: 0 } }]
-              excludePAD = true
+          case 'PAD':
+            if (!LogicOPMAndOPTInLoop) continue
+            if (this.OPTLogicDummy()) {
+              LogicOPMAndOPTInLoop = false
+              must = [{ terms: { tipoPersonalizacion: ['OPM', 'PAD'] } }]
+              must.push(this.getConsultantCodeOrDummy(personalization))
+            }
+            if (this.OPMLogicDummy()) {
+              LogicOPMAndOPTInLoop = false
+              if (this.configurations.rd && this.configurations.mdo && !this.configurations.activeSubscription) {
+                must = [{ terms: { tipoPersonalizacion: ['OPM', 'PAD'] } }]
+                must.push({ term: { revistaDigital: 0 } })
+                must.push(this.getConsultantCodeOrDummy(personalization))
+              }
+            }
+            if (LogicOPMAndOPTInLoop) {
+              must = [{ terms: { tipoPersonalizacion: ['OPT', 'OPM', 'PAD'] } }]
+              must.push(this.getConsultantCodeOrDummy(personalization))
+              LogicOPMAndOPTInLoop = false
             }
             break
         }
-        if (validate.isDummy(this.params.personalization, personalization)) {
-          must.push({ terms: { codigoConsultora: [consultantCodes.DUMMY, consultantCodes.FORCED] } })
-        } else {
-          must.push({ terms: { codigoConsultora: [consultantCodes.CONSULTAN_CODE, consultantCodes.ZERO, consultantCodes.FORCED] } })
-        }
       } else {
-        console.log(personalization, 'false')
-        if (['GND', 'LAN'].some(x => x === personalization)) continue
-        if (['LIQ', 'CAT', 'REV', 'HV'].some(x => x === personalization)) {
-          must.push({ term: { codigoConsultora: consultantCodes.ZERO } })
-        } else {
-          must.push({ terms: { codigoConsultora: [consultantCodes.CONSULTAN_CODE, consultantCodes.ZERO, consultantCodes.FORCED] } })
-        }
+        must.push({ terms: { codigoConsultora: [this.consultantCodes.CONSULTAN_CODE, this.consultantCodes.ZERO, this.consultantCodes.FORCED] } })
       }
+      if (must.length === 1) continue
       should.push({
         bool: { must }
       })
@@ -66,46 +85,47 @@ module.exports = class {
     }
   }
 
-  personalizationHasLogicDummy (personalization) {
-    if (personalization === 'GND') return this.GNDHasLogicDummy()
-    if (personalization === 'LAN') return this.LANHasLogicDummy()
-    if (personalization === 'ODD') return this.ODDHasLogicDummy()
-    if (personalization === 'OPT') return this.OPTHasLogicDummy()
-    if (personalization === 'SR') return this.SRHasLogicDummy()
-    return false
-  }
-
-  GNDHasLogicDummy () {
-    if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.GND) return false
-    if (this.configurations.businessPartner === '1') return false
-    if (this.configurations.businessPartner === '0' && this.configurations.activeSubscription) return false
-    return true
-  }
-
-  LANHasLogicDummy () {
-    if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.LAN) return false
-    if (!this.configurations.activeSubscription) return false
-    return true
-  }
-
-  ODDHasLogicDummy () {
-    if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.ODD) return false
-    return true
-  }
-
-  SRHasLogicDummy () {
-    if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.SR) return false
-    if ((this.configurations.rd && this.configurations.mdo && !this.configurations.activeSubscription) || !this.configurations.rd) {
-      return true
+  getConsultantCodeOrDummy (personalization) {
+    if (validate.isDummy(this.params.personalization, personalization)) {
+      return { terms: { codigoConsultora: [this.consultantCodes.DUMMY, this.consultantCodes.FORCED] } }
+    } else {
+      return { terms: { codigoConsultora: [this.consultantCodes.CONSULTAN_CODE, this.consultantCodes.DUMMY, this.consultantCodes.FORCED] } }
     }
+  }
+
+  personalizationIsActiveLogicDummy (personalization) {
+    if (personalization === 'GND') return env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.GND
+    if (personalization === 'LAN') return env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.LAN
+    if (personalization === 'ODD') return env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.ODD
+    if (['OPT', 'OPM', 'PAD'].some(x => x === personalization)) return env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.OPT
+    if (personalization === 'SR') return env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.SR
     return false
   }
 
-  OPTHasLogicDummy () {
-    if (!env.CONSTANTS.LOGIC_CONSULTANT_DUMMY.OPT) return false
+  GNDLogicDummy () {
+    if (this.configurations.businessPartner === '1') return true
+    if (this.configurations.businessPartner === '0' && this.configurations.activeSubscription) return true
+    return false
+  }
+
+  LANLogicDummy () {
+    if (!this.configurations.activeSubscription) return true
+    return false
+  }
+
+  SRLogicDummy () {
+    if ((this.configurations.rd && this.configurations.mdo && !this.configurations.activeSubscription) || !this.configurations.rd) return true
+    return false
+  }
+
+  OPTLogicDummy () {
     if (this.configurations.rd && this.configurations.mdo && this.configurations.activeSubscription) return true
-    if (this.configurations.rd && this.configurations.mdo && !this.configurations.activeSubscription) return true
     if (this.configurations.rd && !this.configurations.mdo && this.configurations.activeSubscription) return true
+    return false
+  }
+
+  OPMLogicDummy () {
+    if (this.configurations.rd && this.configurations.mdo && !this.configurations.activeSubscription) return true
     if (this.configurations.rd && !this.configurations.mdo && !this.configurations.activeSubscription) return true
     if (this.configurations.rdi) return true
     return false
