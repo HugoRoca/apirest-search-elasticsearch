@@ -9,7 +9,6 @@ module.exports = class {
 
   async getDataElastic () {
     const filter = new DummyConsultantLogic(this.params)
-    this.params.personalizationsFilters = filter.getAllLogicFilters()
-    return this.params
+    return filter.getQueryConsultantDummy()
   }
 }
