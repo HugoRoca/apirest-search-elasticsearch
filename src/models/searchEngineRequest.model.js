@@ -12,7 +12,7 @@ module.exports = class {
     configurations,
     pagination,
     order,
-    filter
+    selectedFilters
   ) {
     this.country = country
     this.campaign = campaign
@@ -38,7 +38,7 @@ module.exports = class {
       field: order.campo,
       type: order.tipo
     }
-    this.filter = filter
+    this.selectedFilters = selectedFilters
   }
 
   get fromValue () {
