@@ -7,3 +7,14 @@ exports.selectInArray = (array, key, value) => {
   }
   return result
 }
+exports.distinctInArray = (array, key) => {
+  let result = []
+  let map = new Map()
+  for (const item of array) {
+    if (!map.has(item[key])) {
+      map.set(item[key], true)
+      result.push(item)
+    }
+  }
+  return result
+}

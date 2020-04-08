@@ -8,7 +8,7 @@ module.exports = class {
   }
 
   connect () {
-    mssql.ConnectionError('error', err => {
+    mssql.on('error', err => {
       console.log(err)
       mssql.close()
     })
