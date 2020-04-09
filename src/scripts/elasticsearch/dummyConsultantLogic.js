@@ -73,7 +73,11 @@ module.exports = class {
             break
         }
       } else {
-        must.push({ terms: { codigoConsultora: [this.consultantCodes.CONSULTAN_CODE, this.consultantCodes.ZERO, this.consultantCodes.FORCED] } })
+        if (['CAT', 'LIQ', 'HV', 'REV'].some(x => x === personalization)) {
+          must.push({ term: { codigoConsultora: this.consultantCodes.ZERO } })
+        } else {
+          must.push(this.getConsultantCodeOrDummy(personalization))
+        }
       }
       if (must.length === 1) continue
       should.push({

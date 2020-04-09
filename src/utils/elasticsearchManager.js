@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 const Elasticsearch = require('elasticsearch')
 const yenv = require('yenv')
 const env = yenv()
@@ -11,41 +12,45 @@ class ElasticsearchManager {
     return ElasticsearchManager.instance
   }
 
-  createConnectionPool () {
-
+  getClient (country) {
+    const cluster = env.ELASTICSEARCH.CLUSTERS.find((item) => {
+      return item.COUNTRIES.some((x) => {
+        return x.toUpperCase() === country.toUpperCase()
+      })
+    })
+    return this.connection[cluster.ID]
   }
 
-  prepareConnectionPoll () { }
+  async search (country, campaign, body) {
+    const index = `${env.ELASTICSEARCH.INDEX_NAME}_${country.toLowerCase()}_${campaign}_*`
+    return await this.getClient(country).search({
+      index,
+      type: env.ELASTICSEARCH.INDEX_TYPE,
+      body
+    })
+  }
 
-  // getClient () {
-  //   const host = this.getCluster(this.country).ENDPOINT
-  //   const requestTimeout = env.ELASTICSEARCH.REQUEST_TIMEOUT ? parseInt(env.ELASTICSEARCH.REQUEST_TIMEOUT) : 30000
-  //   return new Elasticsearch.Client({
-  //     host,
-  //     requestTimeout
-  //   })
-  // }
+  prepareConnectionPool (clusterId, endPoint) {
+    return new Promise((resolve, reject) => {
+      if (this.connection[clusterId]) resolve(this.connection[clusterId])
+      else {
+        this.connection[clusterId] = Elasticsearch.Client({
+          host: endPoint
+        })
+        console.log(`Successfull connection to elasticsearch => ${clusterId} ✓`)
+        resolve(this.connection[clusterId])
+      }
+    })
+  }
 
-  // getIndexName () {
-  //   return `${env.ELASTICSEARCH.INDEX_NAME}_${this.country.toLowerCase()}_${this.campaign}_*`
-  // }
-
-  // getCluster () {
-  //   return env.ELASTICSEARCH.CLUSTERS.find((item) => {
-  //     return item.COUNTRIES.some((x) => {
-  //       return x.toUpperCase() === this.country.toUpperCase()
-  //     })
-  //   })
-  // }
-
-  // async search (body) {
-  //   const indexName = this.getIndexName()
-  //   return await this.getClient().search({
-  //     index: indexName,
-  //     type: env.ELASTICSEARCH.INDEX_TYPE,
-  //     body
-  //   })
-  // }
+  createConnectionPool () {
+    let promise = []
+    for (let i = 0; i < env.ELASTICSEARCH.CLUSTERS.length; i++) {
+      const item = env.ELASTICSEARCH.CLUSTERS[i]
+      promise.push(this.prepareConnectionPool(item.ID, item.ENDPOINT))
+    }
+    return Promise.all(promise)
+  }
 }
 
 const instance = new ElasticsearchManager()
