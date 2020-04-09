@@ -19,7 +19,7 @@ module.exports = class {
     const filtersOnlyActive = Utils.selectInArrayByKey(filters, 'Estado', 1)
     const buildQuery = new BuildQuery(this.params, filtersOnlyActive)
     const query = buildQuery.getQuerySearchEngine()
-    console.log('query', JSON.stringify(query))
+    // console.log('query', JSON.stringify(query))
     return await ElasticsearchManager.search(this.params.country, this.params.campaign, query)
   }
 
