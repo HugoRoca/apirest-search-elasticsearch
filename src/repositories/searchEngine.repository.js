@@ -17,7 +17,8 @@ module.exports = class {
     const filters = await this.getFiltersCache()
     const filtersOnlyActive = Utils.selectInArrayByKey(filters, 'Estado', 1)
     const buildQuery = new BuildQuery(this.params, filtersOnlyActive)
-    return buildQuery.getQuerySearchEngine()
+    const query = buildQuery.getQuerySearchEngine()
+    return query
   }
 
   async getFiltersCache () {
