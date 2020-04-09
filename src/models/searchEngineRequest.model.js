@@ -18,7 +18,7 @@ module.exports = class {
     this.campaign = campaign
     this.consultantCode = consultantCode
     this.zoneCode = zoneCode
-    this.textoBusqueda = searchText
+    this.searchText = searchText
     this.personalizationsDummy = personalizations
     this.configurations = {
       businessPartner: configurations.sociaEmpresaria,
@@ -42,7 +42,7 @@ module.exports = class {
   }
 
   get fromValue () {
-    return this.cantidadProductos * this.numeroPagina
+    return this.pagination.quantityProducts * this.pagination.numberPage
   }
 
   get sortValue () {

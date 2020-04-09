@@ -18,7 +18,7 @@ module.exports = class {
     }
   }
 
-  getQueryConsultantDummy () {
+  getConsultantDummyQuery () {
     const should = []
     let LogicOPMAndOPTInLoop = true
     for (let i = 0; i < this.listPersonalizations.length; i++) {

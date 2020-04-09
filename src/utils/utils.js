@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-exports.selectInArray = (array, key, value) => {
+exports.selectInArrayByKey = (array, key, value) => {
   let result = []
   for (let i = 0; i < array.length; i++) {
     const element = array[i]
@@ -17,4 +17,9 @@ exports.distinctInArray = (array, key) => {
     }
   }
   return result
+}
+exports.decodeText = str => {
+  return str.replace(/&#(\d+);/g, (match, dec) => {
+    return String.fromCharCode(dec)
+  })
 }
