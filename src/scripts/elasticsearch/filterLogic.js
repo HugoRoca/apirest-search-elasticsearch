@@ -3,18 +3,18 @@ const Utils = require('../../utils/utils')
 const _ = require('lodash')
 
 module.exports = class {
-  constructor (filters) {
+  constructor (filters, selectedFilters) {
     this.filtersCache = filters
+    this.selectedFilters = selectedFilters
   }
 
-  getSelectedFiltersQuery (selectedFilters) {
-    console.log('this.params.selectedFilters', selectedFilters)
-    if (_.size(selectedFilters) === 0) return {}
+  getSelectedFiltersQuery () {
+    if (_.size(this.selectedFilters) === 0) return {}
     const sectionsFilters = Utils.distinctInArray(this.filtersCache, 'IdSeccion')
     let must = []
     for (let i = 0; i < sectionsFilters.length; i++) {
       const item = sectionsFilters[i]
-      const filterSelected = Utils.selectInArrayByKey(selectedFilters, 'idSeccion', item.IdSeccion)
+      const filterSelected = Utils.selectInArrayByKey(this.selectedFilters, 'idSeccion', item.IdSeccion)
       for (let j = 0; j < filterSelected.length; j++) {
         const element = filterSelected[j]
         const dataFilter = this.filtersCache.find(x => x.Codigo === element.idFiltro)
@@ -53,10 +53,7 @@ module.exports = class {
         }
       }
     }
-    if (must.length === 0) return {}
-    return {
-      bool: must
-    }
+    return must
   }
 
   getAggregations () {

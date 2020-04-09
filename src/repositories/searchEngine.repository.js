@@ -21,13 +21,13 @@ module.exports = class {
   }
 
   async getFiltersCache () {
-    const key = `${env.ENVIRONMENT}_${env.LOGGING.APPLICATION}_Filters`
+    const key = `${env.ENVIRONMENT}_${env.LOGGING.APPLICATION}_FilterCache`
     let filters = await CacheManager.get(key)
     if (_.isUndefined(filters) || _.isNull(filters)) {
-      filters = await this.sqlManager.execStoreProcedure(Constants.storeProcedures.getFilters)
-      await CacheManager.set(key, JSON.stringify(filters))
+      console.log('entro save redis')
+      filters = JSON.stringify(await this.sqlManager.execStoreProcedure(Constants.storeProcedures.getFilters))
+      await CacheManager.set(key, filters)
     }
-    console.log('filters', filters.length)
     return JSON.parse(filters)
   }
 }

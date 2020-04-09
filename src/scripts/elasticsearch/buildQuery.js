@@ -1,28 +1,30 @@
-// const DummyConsultantLogic = require('./dummyConsultantLogic')
+/* eslint-disable prefer-const */
+const DummyConsultantLogic = require('./dummyConsultantLogic')
 const FilterLogic = require('./filterLogic')
 const OtherQuery = require('./otherQuery')
-const ParametersIdHard = require('./parameterInHardQuery')
+const InHardQuery = require('./inHardQuery')
 const _ = require('lodash')
 
 module.exports = class {
   constructor (params, filterCache) {
     this.params = params
-    this.filterCache = filterCache
-    // this.dummyConsultantLogic = new DummyConsultantLogic(params)
+    this.filterLogic = new FilterLogic(filterCache, params.selectedFilters)
+    this.dummyConsultantLogic = new DummyConsultantLogic(params)
+    this.otherQuery = new OtherQuery(params)
   }
 
   getQuerySearchEngine () {
-    const filterLogic = new FilterLogic(this.filterCache)
-    const otherQuery = new OtherQuery(this.params)
-    const aggregations = filterLogic.getAggregations()
-    const selectedFiltersQuery = filterLogic.getSelectedFiltersQuery(this.params.selectedFilters)
-    // const consultantDummyQuery = this.dummyConsultantLogic.getConsultantDummyQuery()
-    const filter = ParametersIdHard.hardSearchEngine // 'filter' is a word reserved in elasticsearch
-    const must = otherQuery.getQueryMultiMatch()
-    const festivals = otherQuery.getQueryFestivals()
+    let filter = [] // 'filter' is a word reserved in elasticsearch
+    const aggregations = this.filterLogic.getAggregations()
+    const selectedFiltersQuery = this.filterLogic.getSelectedFiltersQuery()
+    const consultantDummyQuery = this.dummyConsultantLogic.getConsultantDummyQuery()
+    const must = this.otherQuery.getQueryMultiMatch()
+    const festivals = this.otherQuery.getQueryFestivals()
+    filter.push(InHardQuery.active)
+    filter.push(InHardQuery.greaterThanZero)
     if (_.size(festivals) > 0) filter.push(festivals)
     if (_.size(selectedFiltersQuery) > 0) filter.push({ bool: { must: selectedFiltersQuery } })
-    // if (_.size(consultantDummyQuery) > 0) filter.push({ bool: { should: consultantDummyQuery } })
+    if (_.size(consultantDummyQuery) > 0) filter.push({ bool: { should: consultantDummyQuery } })
     return {
       from: this.params.fromValue,
       size: this.params.pagination.quantityProducts,

@@ -80,9 +80,7 @@ module.exports = class {
         bool: { must }
       })
     }
-    return {
-      bool: { should }
-    }
+    return should
   }
 
   getConsultantCodeOrDummy (personalization) {
