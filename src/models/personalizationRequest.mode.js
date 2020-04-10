@@ -1,8 +1,7 @@
 module.exports = class {
-  constructor (country, campaign, consultantCode, origin) {
+  constructor (country, campaign, consultantCode) {
     this.country = country
     this.campaign = campaign
     this.consultantCode = consultantCode
-    this.origin = origin
   }
 }

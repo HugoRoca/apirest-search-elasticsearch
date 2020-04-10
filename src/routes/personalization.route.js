@@ -12,8 +12,7 @@ personalizationRouter.get(`${env.ENDPOINTS.PERSONALIZATION}/:country/:campaign/:
     const personalizationModel = new PersonalizationModel(
       ctx.params.country,
       ctx.params.campaign,
-      ctx.params.consultantCode,
-      ctx.params.origin
+      ctx.params.consultantCode
     )
     ctx.body = await controller.runPersonalization(personalizationModel)
   } catch (error) {

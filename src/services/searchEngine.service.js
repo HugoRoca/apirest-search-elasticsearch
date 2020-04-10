@@ -3,8 +3,7 @@ const SearchEngineRepository = require('../repositories/searchEngine.repository'
 const ResponseModel = require('../models/response.model')
 const SearchEngineProduct = require('../models/searchEngineProduct.model')
 const StockRepository = require('../repositories/stock.repository')
-const SqlManager = require('../utils/sqlManager')
-const CacheManager = require('../utils/cacheManager')
+const CacheRepository = require('../repositories/cache.repository')
 const Utils = require('../utils/utils')
 const Constants = require('../utils/constants')
 const yenv = require('yenv')
@@ -14,12 +13,14 @@ const _ = require('lodash')
 module.exports = class {
   constructor (params) {
     this.params = params
+    this.searchEngineRepository = new SearchEngineRepository(params)
+    this.cacheRepository = new CacheRepository(params)
+    this.stockRepository = new StockRepository()
   }
 
   async runSearch () {
     const filtersCache = await this.getFiltersCache()
-    const searchEngineRepository = new SearchEngineRepository(this.params, filtersCache)
-    const dataElastic = await searchEngineRepository.getDataElastic()
+    const dataElastic = await this.searchEngineRepository.getDataElastic(filtersCache)
     const total = dataElastic.hits.total
     if (total === 0) return new ResponseModel(0, [], [], 'OK')
     const products = await this.getProducts(dataElastic.hits.hits, this.params)
@@ -29,14 +30,8 @@ module.exports = class {
 
   async getFiltersCache () {
     const key = `${env.ENVIRONMENT}_${env.LOGGING.APPLICATION}_FiltersCache`
-    const sqlManager = new SqlManager(this.params.country)
-    let filters = await CacheManager.get(key)
-    if (_.isUndefined(filters) || _.isNull(filters)) {
-      filters = JSON.stringify(await sqlManager.execStoreProcedure(Constants.storeProcedures.getFilters))
-      await CacheManager.set(key, filters)
-    }
-    const jsonParse = JSON.parse(filters)
-    const filtersCacheOnlyActive = Utils.selectInArrayByKey(jsonParse, 'Estado', 1)
+    let filters = await this.cacheRepository.getFiltersCache(key, Constants.storeProcedures.getFilters)
+    const filtersCacheOnlyActive = Utils.selectInArrayByKey(filters, 'Estado', 1)
     return filtersCacheOnlyActive
   }
 
@@ -73,8 +68,7 @@ module.exports = class {
     }
 
     if (env.CONSTANTS.VALIDATE_STOCK) {
-      const stockRepository = new StockRepository()
-      const getValidatesCuvs = await stockRepository.validateStock(this.params.country, this.params.campaign, cuvs, this.params.configurations.isBilling)
+      const getValidatesCuvs = await this.stockRepository.validateStock(this.params.country, this.params.campaign, cuvs, this.params.configurations.isBilling)
       getValidatesCuvs.forEach(item => {
         const indexCuv = products.indexOf(x => x.cuv === item.coD_VENTA_PADRE)
         products[indexCuv].stock = item.stock === 1

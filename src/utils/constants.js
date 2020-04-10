@@ -3,7 +3,8 @@ const codeCategories = {
 }
 
 const storeProcedures = {
-  getFilters: '[Buscador].[ListaFiltro]'
+  getFilters: '[Buscador].[ListaFiltro]',
+  getCategories: '[Buscador].[ListaCategoria]'
 }
 
 const filterFields = {

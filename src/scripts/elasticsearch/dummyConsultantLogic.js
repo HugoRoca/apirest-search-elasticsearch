@@ -8,7 +8,6 @@ const env = yenv()
 module.exports = class {
   constructor (params) {
     this.params = params
-    this.listPersonalizations = env.CONSTANTS.PERSONALIZATIONS
     this.configurations = params.configurations
     this.consultantCodes = {
       CONSULTAN_CODE: this.params.consultantCode,
@@ -18,11 +17,11 @@ module.exports = class {
     }
   }
 
-  getConsultantDummyQuery () {
+  getConsultantDummyQuery (listPersonalizations) {
     const should = []
     let LogicOPMAndOPTInLoop = true
-    for (let i = 0; i < this.listPersonalizations.length; i++) {
-      const personalization = this.listPersonalizations[i]
+    for (let i = 0; i < listPersonalizations.length; i++) {
+      const personalization = listPersonalizations[i]
       let must = [{ term: { tipoPersonalizacion: personalization } }]
       if (this.personalizationIsActiveLogicDummy(personalization)) {
         switch (personalization) {

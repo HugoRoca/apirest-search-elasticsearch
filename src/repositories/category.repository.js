@@ -6,10 +6,10 @@ module.exports = class {
     this.params = params
   }
 
-  async getDataElastic (filtersCache) {
-    const buildQuery = new BuildQuery(this.params, filtersCache)
-    const query = buildQuery.getQuerySearchEngine()
-    // console.log('query', JSON.stringify(query))
+  async getDataElastic () {
+    const buildQuery = new BuildQuery(this.params, [])
+    const query = buildQuery.getQueryCategory()
+    console.log('query', JSON.stringify(query))
     return await ElasticsearchManager.search(this.params.country, this.params.campaign, query)
   }
 }
