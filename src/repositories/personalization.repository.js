@@ -2,14 +2,13 @@ const BuildQuery = require('../scripts/elasticsearch/buildQuery')
 const ElasticsearchManager = require('../utils/elasticsearchManager')
 
 module.exports = class {
-  constructor (params, filterCache) {
+  constructor (params) {
     this.params = params
-    this.filterCache = filterCache
   }
 
   async getDataElastic () {
-    const buildQuery = new BuildQuery(this.params, this.filterCache)
-    const query = buildQuery.getQuerySearchEngine()
+    const buildQuery = new BuildQuery(this.params, [])
+    const query = buildQuery.getQueryPersonalization()
     // console.log('query', JSON.stringify(query))
     return await ElasticsearchManager.search(this.params.country, this.params.campaign, query)
   }

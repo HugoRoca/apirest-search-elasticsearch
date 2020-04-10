@@ -3,6 +3,7 @@ const SearchEngineRepository = require('../repositories/searchEngine.repository'
 const ResponseModel = require('../models/response.model')
 const SearchEngineProduct = require('../models/searchEngineProduct.model')
 const StockRepository = require('../repositories/stock.repository')
+const SqlManager = require('../utils/sqlManager')
 const CacheManager = require('../utils/cacheManager')
 const Utils = require('../utils/utils')
 const Constants = require('../utils/constants')
@@ -11,34 +12,39 @@ const env = yenv()
 const _ = require('lodash')
 
 module.exports = class {
-  async runSearch (params) {
+  constructor (params) {
+    this.params = params
+  }
+
+  async runSearch () {
     const filtersCache = await this.getFiltersCache()
-    const searchEngineRepository = new SearchEngineRepository(params, filtersCache)
+    const filtersCacheOnlyActive = Utils.selectInArrayByKey(filtersCache, 'Estado', 1)
+    const searchEngineRepository = new SearchEngineRepository(this.params, filtersCacheOnlyActive)
     const dataElastic = await searchEngineRepository.getDataElastic()
     const total = dataElastic.hits.total
     if (total === 0) return new ResponseModel(0, [], [], 'OK')
-    const products = await this.getProducts(dataElastic.hits.hits, params)
-    const filters = this.getFilters(dataElastic.aggregations, params, filtersCache)
+    const products = await this.getProducts(dataElastic.hits.hits, this.params)
+    const filters = this.getFilters(dataElastic.aggregations, filtersCacheOnlyActive)
     return new ResponseModel(total, products, filters, 'OK')
   }
 
   async getFiltersCache () {
-    const key = `${env.ENVIRONMENT}_${env.LOGGING.APPLICATION}_FilterCache`
+    const key = `${env.ENVIRONMENT}_${env.LOGGING.APPLICATION}_FiltersCache`
+    const sqlManager = new SqlManager(this.params.country)
     let filters = await CacheManager.get(key)
     if (_.isUndefined(filters) || _.isNull(filters)) {
-      filters = JSON.stringify(await this.sqlManager.execStoreProcedure(Constants.storeProcedures.getFilters))
+      filters = JSON.stringify(await sqlManager.execStoreProcedure(Constants.storeProcedures.getFilters))
       await CacheManager.set(key, filters)
     }
-    const filtersOnlyActive = Utils.selectInArrayByKey(JSON.parse(filters), 'Estado', 1)
-    return filtersOnlyActive
+    return JSON.parse(filters)
   }
 
-  async getProducts (data, params) {
+  async getProducts (data) {
     let products = []
     let cuvs = []
     for (let i = 0; i < data.length; i++) {
       const item = data[i]._source
-      const image = Utils.buildImageUrl(item.imagen, params.country.toUpperCase(), item.imagenOrigen, params.campaign, item.marcaId)
+      const image = Utils.buildImageUrl(item.imagen, this.params.country.toUpperCase(), item.imagenOrigen, this.params.campaign, item.marcaId)
       products.push(new SearchEngineProduct(
         item.cuv,
         item.codigoProducto,
@@ -67,7 +73,7 @@ module.exports = class {
 
     if (env.CONSTANTS.VALIDATE_STOCK) {
       const stockRepository = new StockRepository()
-      const getValidatesCuvs = await stockRepository.validateStock(params.country, params.campaign, cuvs, params.configurations.isBilling)
+      const getValidatesCuvs = await stockRepository.validateStock(this.params.country, this.params.campaign, cuvs, this.params.configurations.isBilling)
       getValidatesCuvs.forEach(item => {
         const indexCuv = products.indexOf(x => x.cuv === item.coD_VENTA_PADRE)
         products[indexCuv].stock = item.stock === 1
@@ -77,7 +83,7 @@ module.exports = class {
     return products
   }
 
-  getFilters (aggs, params, filtersCache) {
+  getFilters (aggs, filtersCache) {
     let filterOriginDistinct = Utils.distinctInArray(filtersCache, 'IdSeccion')
     let filterOriginDistinctElastic = Utils.distinctInArray(filtersCache, 'ElasticsearchCampo')
     let filterOrigin = filtersCache
@@ -95,7 +101,7 @@ module.exports = class {
       const item = filterOriginDistinct[i]
 
       let filtroSeccionOrigen = Utils.selectInArrayByKey(filterOrigin, 'IdSeccion', item.IdSeccion)
-      let filtroSeccionRequest = Utils.selectInArrayByKey(params.selectedFilters, 'idSeccion', item.IdSeccion)
+      let filtroSeccionRequest = Utils.selectInArrayByKey(this.params.selectedFilters, 'idSeccion', item.IdSeccion)
       let filtroSeccion = []
 
       for (let j = 0; j < filtroSeccionOrigen.length; j++) {

@@ -38,4 +38,26 @@ module.exports = class {
       aggregations
     }
   }
+
+  getQueryPersonalization () {
+    return {
+      size: 0,
+      query: {
+        bool: {
+          must: [{
+            term: {
+              codigoConsultora: this.params.consultantCode
+            }
+          }]
+        }
+      },
+      aggs: {
+        unique_personalizacion: {
+          terms: {
+            field: 'tipoPersonalizacion'
+          }
+        }
+      }
+    }
+  }
 }
