@@ -18,13 +18,12 @@ module.exports = class {
 
   async runSearch () {
     const filtersCache = await this.getFiltersCache()
-    const filtersCacheOnlyActive = Utils.selectInArrayByKey(filtersCache, 'Estado', 1)
-    const searchEngineRepository = new SearchEngineRepository(this.params, filtersCacheOnlyActive)
+    const searchEngineRepository = new SearchEngineRepository(this.params, filtersCache)
     const dataElastic = await searchEngineRepository.getDataElastic()
     const total = dataElastic.hits.total
     if (total === 0) return new ResponseModel(0, [], [], 'OK')
     const products = await this.getProducts(dataElastic.hits.hits, this.params)
-    const filters = this.getFilters(dataElastic.aggregations, filtersCacheOnlyActive)
+    const filters = this.getFilters(dataElastic.aggregations, filtersCache)
     return new ResponseModel(total, products, filters, 'OK')
   }
 
@@ -36,7 +35,9 @@ module.exports = class {
       filters = JSON.stringify(await sqlManager.execStoreProcedure(Constants.storeProcedures.getFilters))
       await CacheManager.set(key, filters)
     }
-    return JSON.parse(filters)
+    const jsonParse = JSON.parse(filters)
+    const filtersCacheOnlyActive = Utils.selectInArrayByKey(jsonParse, 'Estado', 1)
+    return filtersCacheOnlyActive
   }
 
   async getProducts (data) {
