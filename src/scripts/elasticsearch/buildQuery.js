@@ -92,10 +92,10 @@ module.exports = class {
 
   getQueryRecommendation () {
     let personalizations = env.CONSTANTS.PERSONALIZATIONS
-    personalizations.splice(personalizations.indexOf('GND'), 1)
-    personalizations.splice(personalizations.indexOf('LIQ'), 1)
-    personalizations.splice(personalizations.indexOf('CAT'), 1)
-    personalizations.splice(personalizations.indexOf('LMG'), 1)
+    personalizations = personalizations.filter(x => x !== 'GND')
+    personalizations = personalizations.filter(x => x !== 'LIQ')
+    personalizations = personalizations.filter(x => x !== 'CAT')
+    personalizations = personalizations.filter(x => x !== 'LMG')
     console.log('personalizations', personalizations)
     const dummyConsultantLogic = new DummyConsultantLogic(this.params)
     const notInQuery = new NotInQuery(this.params)
