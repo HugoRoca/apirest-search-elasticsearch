@@ -9,14 +9,14 @@ module.exports = class {
   async getDataElastic () {
     const buildQuery = new BuildQuery(this.params)
     const query = buildQuery.getQueryRecommendation()
-    console.log('query', JSON.stringify(query))
+    // console.log('query REOMMENDATION', JSON.stringify(query))
     return await ElasticsearchManager.search(this.params.country, this.params.campaign, query)
   }
 
   async getDataOnlyCuv () {
     const buildQuery = new BuildQuery(this.params)
     const query = buildQuery.getQueryOnlyCuv()
-    console.log('query', JSON.stringify(query))
+    // console.log('query RECOMMENDATION CUV', JSON.stringify(query))
     return await ElasticsearchManager.search(this.params.country, this.params.campaign, query)
   }
 }

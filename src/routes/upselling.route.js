@@ -16,6 +16,7 @@ upsellingRouter.post(`${env.ENDPOINTS.UPSELLING}/:country/:campaign/:origin?`, a
       ctx.request.body.codigoZona,
       ctx.request.body.cuv,
       ctx.request.body.codigoProducto,
+      ctx.request.body.precioProducto,
       ctx.request.body.cantidadProductos,
       ctx.request.body.personalizaciones,
       ctx.request.body.configuracion

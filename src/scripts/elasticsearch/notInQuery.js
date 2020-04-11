@@ -9,15 +9,14 @@ module.exports = class {
     }
   }
 
-  getQueryUpsellingCuv () {
-    return {
-      term: { cuv: this.params.cuv }
-    }
-  }
-
-  getQueryUpsellingPersonalization () {
-    return {
-      terms: { tipoPersonalizacion: ['GND', 'LIQ', 'CAT', 'HV', 'LAN'] }
-    }
+  getQueryUpselling () {
+    return [
+      {
+        term: { cuv: this.params.cuv }
+      },
+      {
+        terms: { tipoPersonalizacion: ['GND', 'LIQ', 'CAT', 'HV', 'LAN'] }
+      }
+    ]
   }
 }

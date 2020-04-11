@@ -8,8 +8,8 @@ module.exports = class {
 
   async getDataElastic () {
     const buildQuery = new BuildQuery(this.params, [])
-    const query = buildQuery.getQueryCategory()
-    // console.log('query CATEGORY', JSON.stringify(query))
+    const query = buildQuery.getQueryUpselling()
+    // console.log('query UPSELLING', JSON.stringify(query))
     return await ElasticsearchManager.search(this.params.country, this.params.campaign, query)
   }
 }

@@ -6,6 +6,7 @@ module.exports = class {
     zoneCode,
     cuv,
     codeProduct,
+    priceProduct,
     quantityProducts,
     personalizations,
     configurations
@@ -16,6 +17,7 @@ module.exports = class {
     this.zoneCode = zoneCode
     this.cuv = cuv
     this.codeProduct = codeProduct
+    this.priceProduct = priceProduct
     this.quantityProducts = quantityProducts
     this.personalizationsDummy = personalizations
     this.configurations = {

@@ -2,6 +2,7 @@
 const RecommendationRepository = require('../repositories/recommendation.repository')
 const ResponseModel = require('../models/response.model')
 const ProductModel = require('../models/product.model')
+const StockRepository = require('../repositories/stock.repository')
 const Utils = require('../utils/utils')
 const yenv = require('yenv')
 const env = yenv()
@@ -10,12 +11,13 @@ const _ = require('lodash')
 module.exports = class {
   constructor (params) {
     this.params = params
+    this.stockRepository = new StockRepository()
   }
 
   async runRecommendation () {
     const recommendationRepository = new RecommendationRepository(this.params)
     const dataElastic = await recommendationRepository.getDataElastic()
-    let total = dataElastic.hits.total
+    const total = dataElastic.hits.total
     if (total === 0) return new ResponseModel(0, [], [], 'No data', [], [], true)
     const hits = dataElastic.hits.hits
     const products = await this.getProducts(hits)
