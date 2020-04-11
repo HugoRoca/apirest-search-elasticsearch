@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 const SearchEngineRepository = require('../repositories/searchEngine.repository')
 const ResponseModel = require('../models/response.model')
-const SearchEngineProduct = require('../models/searchEngineProduct.model')
+const ProductModel = require('../models/product.model')
 const StockRepository = require('../repositories/stock.repository')
 const CacheRepository = require('../repositories/cache.repository')
 const Utils = require('../utils/utils')
@@ -41,7 +41,7 @@ module.exports = class {
     for (let i = 0; i < data.length; i++) {
       const item = data[i]._source
       const image = Utils.buildImageUrl(item.imagen, this.params.country.toUpperCase(), item.imagenOrigen, this.params.campaign, item.marcaId)
-      products.push(new SearchEngineProduct(
+      products.push(new ProductModel(
         item.cuv,
         item.codigoProducto,
         image,

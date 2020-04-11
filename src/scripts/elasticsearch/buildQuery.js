@@ -2,6 +2,7 @@
 const DummyConsultantLogic = require('./dummyConsultantLogic')
 const FilterLogic = require('./filterLogic')
 const OtherQuery = require('./otherQuery')
+const NotInQuery = require('./notInQuery')
 const InHardQuery = require('./inHardQuery')
 const _ = require('lodash')
 const yenv = require('yenv')
@@ -84,6 +85,56 @@ module.exports = class {
             field: 'categorias.keyword',
             size: 500
           }
+        }
+      }
+    }
+  }
+
+  getQueryRecommendation () {
+    let personalizations = env.CONSTANTS.PERSONALIZATIONS
+    personalizations.splice(personalizations.indexOf('GND'), 1)
+    personalizations.splice(personalizations.indexOf('LIQ'), 1)
+    personalizations.splice(personalizations.indexOf('CAT'), 1)
+    personalizations.splice(personalizations.indexOf('LMG'), 1)
+    console.log('personalizations', personalizations)
+    const dummyConsultantLogic = new DummyConsultantLogic(this.params)
+    const notInQuery = new NotInQuery(this.params)
+    const consultantDummyQuery = dummyConsultantLogic.getConsultantDummyQuery(personalizations)
+    let filter = [] // 'filter' is a word reserved in elasticsearch
+    // eslint-disable-next-line camelcase
+    let must_not = []
+    filter.push(InHardQuery.active)
+    filter.push(InHardQuery.greaterThanZero)
+    must_not.push(notInQuery.getQueryRecommendation())
+    if (_.size(consultantDummyQuery) > 0) filter.push({ bool: { should: consultantDummyQuery } })
+    let codeProduct = this.params.codeProduct
+    if (_.isString(codeProduct)) {
+      codeProduct = [this.params.codeProduct]
+    }
+    return {
+      size: this.params.quantityProducts,
+      sort: this.params.sortValue,
+      query: {
+        bool: {
+          must: {
+            bool: {
+              should: [
+                { terms: { codigoProductos: codeProduct } }
+              ]
+            }
+          },
+          must_not,
+          filter
+        }
+      }
+    }
+  }
+
+  getQueryOnlyCuv () {
+    return {
+      query: {
+        term: {
+          cuv: this.params.cuv
         }
       }
     }

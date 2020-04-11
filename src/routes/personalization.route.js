@@ -1,6 +1,6 @@
 const KoaRouter = require('koa-router')
 const PersonalizationController = require('../controllers/personalization.controller')
-const PersonalizationModel = require('../models/personalizationRequest.mode')
+const PersonalizationModel = require('../models/personalizationRequest.model')
 const yenv = require('yenv')
 
 const personalizationRouter = new KoaRouter()
