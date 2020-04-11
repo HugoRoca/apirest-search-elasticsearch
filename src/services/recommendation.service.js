@@ -16,11 +16,11 @@ module.exports = class {
     const recommendationRepository = new RecommendationRepository(this.params)
     const dataElastic = await recommendationRepository.getDataElastic()
     let total = dataElastic.hits.total
-    if (total === 0) return new ResponseModel(0, [], [], 'No data', [])
+    if (total === 0) return new ResponseModel(0, [], [], 'No data', [], [], true)
     const hits = dataElastic.hits.hits
     const products = await this.getProducts(hits)
     const productsConsulted = await this.getProductConsulted(recommendationRepository)
-    return new ResponseModel(products.length, products, [], 'OK', productsConsulted)
+    return new ResponseModel(products.length, products, [], 'OK', productsConsulted, [], true)
   }
 
   async getProductConsulted (recommendationRepository) {

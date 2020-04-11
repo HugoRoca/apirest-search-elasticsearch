@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable prefer-const */
 const DummyConsultantLogic = require('./dummyConsultantLogic')
 const FilterLogic = require('./filterLogic')
@@ -96,12 +97,10 @@ module.exports = class {
     personalizations = personalizations.filter(x => x !== 'LIQ')
     personalizations = personalizations.filter(x => x !== 'CAT')
     personalizations = personalizations.filter(x => x !== 'LMG')
-    console.log('personalizations', personalizations)
     const dummyConsultantLogic = new DummyConsultantLogic(this.params)
     const notInQuery = new NotInQuery(this.params)
     const consultantDummyQuery = dummyConsultantLogic.getConsultantDummyQuery(personalizations)
     let filter = [] // 'filter' is a word reserved in elasticsearch
-    // eslint-disable-next-line camelcase
     let must_not = []
     filter.push(InHardQuery.active)
     filter.push(InHardQuery.greaterThanZero)
@@ -116,13 +115,7 @@ module.exports = class {
       sort: this.params.sortValue,
       query: {
         bool: {
-          must: {
-            bool: {
-              should: [
-                { terms: { codigoProductos: codeProduct } }
-              ]
-            }
-          },
+          must: { terms: { codigoProductos: codeProduct } },
           must_not,
           filter
         }
@@ -136,6 +129,45 @@ module.exports = class {
         term: {
           cuv: this.params.cuv
         }
+      }
+    }
+  }
+
+  getQueryUpselling () {
+    let personalizations = env.CONSTANTS.PERSONALIZATIONS
+    personalizations = personalizations.filter(x => x !== 'GND')
+    personalizations = personalizations.filter(x => x !== 'LIQ')
+    personalizations = personalizations.filter(x => x !== 'CAT')
+    personalizations = personalizations.filter(x => x !== 'LMG')
+    personalizations = personalizations.filter(x => x !== 'LAN')
+    const notInQuery = new NotInQuery(this.params)
+    const dummyConsultantLogic = new DummyConsultantLogic(this.params)
+    const consultantDummyQuery = dummyConsultantLogic.getConsultantDummyQuery(personalizations)
+    let filter = [] // 'filter' is a word reserved in elasticsearch
+    let must_not = []
+    filter.push(InHardQuery.active)
+    filter.push(InHardQuery.greaterThanZero)
+    filter.push(InHardQuery.categoriesKeyword)
+    filter.push(InHardQuery.groupArticleKeyword)
+    if (_.size(consultantDummyQuery) > 0) filter.push({ bool: { should: consultantDummyQuery } })
+    must_not.push(notInQuery.getQueryUpsellingCuv())
+    must_not.push(notInQuery.getQueryUpsellingPersonalization())
+    let codeProduct = this.params.codeProduct
+    if (_.isString(codeProduct)) {
+      codeProduct = [this.params.codeProduct]
+    }
+    return {
+      size: this.params.quantityProducts,
+      sort: this.params.sortValue,
+      query: {
+        bool: {
+          must: { terms: { codigoProductos: codeProduct } },
+          must_not,
+          filter
+        }
+      },
+      collapse: {
+        field: 'cuv'
       }
     }
   }
