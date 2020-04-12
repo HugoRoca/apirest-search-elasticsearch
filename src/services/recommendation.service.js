@@ -16,7 +16,7 @@ module.exports = class {
   }
 
   async runRecommendation () {
-    const dataElastic = await this.recommendationRepositorynRepository.getDataElastic()
+    const dataElastic = await this.recommendationRepository.getDataElastic()
     const total = dataElastic.hits.total
     if (total === 0) return new ResponseModel(0, [], [], 'No data', [], [], true)
     const hits = dataElastic.hits.hits

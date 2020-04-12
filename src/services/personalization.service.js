@@ -7,7 +7,7 @@ module.exports = class {
   }
 
   async runPersonalization () {
-    const dataElastic = await this.personalizationRepositoryository.getDataElastic()
+    const dataElastic = await this.personalizationRepository.getDataElastic()
     if (dataElastic.hits.total === 0) return 'XYZ'
     const aggs = dataElastic.aggregations.unique_personalizacion.buckets
     if (aggs.length === 0) return 'XYZ'

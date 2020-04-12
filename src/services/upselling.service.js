@@ -15,7 +15,7 @@ module.exports = class {
     this.stockRepository = new StockRepository()
   }
 
-  async runUpsellin () {
+  async runUpselling () {
     const dataElastic = await this.upsellingRepository.getDataElastic()
     const total = dataElastic.hits.total
     if (total === 0) return new ResponseModel(0, [], [], 'No data', [], [], true)
