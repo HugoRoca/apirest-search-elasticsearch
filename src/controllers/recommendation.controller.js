@@ -1,7 +1,7 @@
 const RecommendationService = require('../services/recommendation.service')
 const RecommendationModel = require('../models/recommendationRequest.model')
 const ResponseModel = require('../models/response.model')
-const validate = require('../utils/utils')
+const validate = require('../utils/is')
 
 module.exports = class {
   async runRecommendation (ctx) {
@@ -21,7 +21,7 @@ module.exports = class {
       const recommendationService = new RecommendationService(recommendationModel)
       ctx.body = await recommendationService.runRecommendation()
     } catch (error) {
-      ctx.throw = error
+      ctx.throw(400, error)
     }
   }
 }

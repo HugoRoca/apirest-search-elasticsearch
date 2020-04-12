@@ -1,7 +1,7 @@
 const CategoryService = require('../services/category.service')
 const CategoryModel = require('../models/categoryRequest.model')
 const ResponseModel = require('../models/response.model')
-const validate = require('../utils/utils')
+const validate = require('../utils/is')
 
 module.exports = class {
   async runCategory (ctx) {
@@ -19,8 +19,7 @@ module.exports = class {
       const categoryService = new CategoryService(categoryModel)
       ctx.body = await categoryService.runCategory()
     } catch (error) {
-      console.log(error)
-      ctx.throw = error
+      ctx.throw(400, error)
     }
   }
 }

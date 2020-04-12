@@ -9,6 +9,6 @@ const controller = new CategoryController()
 const postValidator = schemaValidator({ params: CategorySchema.post })
 const env = yenv()
 
-searhEngineRouter.post(env.ENDPOINTS.CATEGORY, '/:country/:campaign/:origin?', postValidator, controller.runCategory)
+searhEngineRouter.post(`${env.ENDPOINTS.CATEGORY}/:country/:campaign/:origin?`, postValidator, controller.runCategory)
 
 module.exports = searhEngineRouter

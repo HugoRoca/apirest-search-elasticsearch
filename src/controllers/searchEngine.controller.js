@@ -22,7 +22,7 @@ module.exports = class {
       const searchEngineService = new SearchEngineService(searchEngineModel)
       ctx.body = await searchEngineService.runSearch()
     } catch (error) {
-      ctx.throw = error
+      ctx.throw(400, error)
     }
   }
 }

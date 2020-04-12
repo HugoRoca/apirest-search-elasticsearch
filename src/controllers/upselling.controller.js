@@ -22,7 +22,7 @@ module.exports = class {
       const upsellingService = new UpsellingService(upsellingModel)
       ctx.body = await upsellingService.runUpselling()
     } catch (error) {
-      ctx.throw = error
+      ctx.throw(400, error)
     }
   }
 }
