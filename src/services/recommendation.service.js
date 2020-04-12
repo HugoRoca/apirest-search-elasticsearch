@@ -12,22 +12,22 @@ module.exports = class {
   constructor (params) {
     this.params = params
     this.stockRepository = new StockRepository()
+    this.recommendationRepository = new RecommendationRepository(this.params)
   }
 
   async runRecommendation () {
-    const recommendationRepository = new RecommendationRepository(this.params)
-    const dataElastic = await recommendationRepository.getDataElastic()
+    const dataElastic = await this.recommendationRepositorynRepository.getDataElastic()
     const total = dataElastic.hits.total
     if (total === 0) return new ResponseModel(0, [], [], 'No data', [], [], true)
     const hits = dataElastic.hits.hits
     const products = await this.getProducts(hits)
-    const productsConsulted = await this.getProductConsulted(recommendationRepository)
+    const productsConsulted = await this.getProductConsulted()
     return new ResponseModel(products.length, products, [], 'OK', productsConsulted, [], true)
   }
 
-  async getProductConsulted (recommendationRepository) {
+  async getProductConsulted () {
     if (!this.params.configurations.showProduct) return []
-    const dataElastic = await recommendationRepository.getDataOnlyCuv()
+    const dataElastic = await this.recommendationRepository.getDataOnlyCuv()
     const total = dataElastic.hits.total
     if (total === 0) return []
     let productConsulted = []

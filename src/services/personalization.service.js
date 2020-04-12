@@ -3,11 +3,11 @@ const PersonalizationRepository = require('../repositories/personalization.repos
 module.exports = class {
   constructor (params) {
     this.params = params
+    this.personalizationRepository = new PersonalizationRepository(this.params)
   }
 
   async runPersonalization () {
-    const personalizationRepository = new PersonalizationRepository(this.params)
-    const dataElastic = await personalizationRepository.getDataElastic()
+    const dataElastic = await this.personalizationRepositoryository.getDataElastic()
     if (dataElastic.hits.total === 0) return 'XYZ'
     const aggs = dataElastic.aggregations.unique_personalizacion.buckets
     if (aggs.length === 0) return 'XYZ'

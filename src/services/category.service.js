@@ -8,11 +8,11 @@ module.exports = class {
   constructor (params) {
     this.params = params
     this.cacheRepository = new CacheRepository(params)
+    this.categoryRepository = new CategoryRepository(params)
   }
 
   async runCategory () {
-    const categoryRepository = new CategoryRepository(this.params)
-    const dataElastic = await categoryRepository.getDataElastic()
+    const dataElastic = await this.categoryRepository.getDataElastic()
     const dataCache = await this.getDataCache()
     const total = dataElastic.hits.total
     if (total === 0) return []
