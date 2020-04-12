@@ -4,10 +4,12 @@
   "description": "Api Rest for search documents in elasticsearch",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js --ext js",
-    "prestart": "npm run lint",
-    "test": "jest test",
-    "lint": "eslint src"
+    "clean": "rimraf .cache dist reports tmp",
+    "lint": "eslint src",
+    "prestart": "npm run clean && npm run lint",
+    "start": "cross-env NODE_ENV=stage nodemon src/index.js --ext js",
+    "start:prd": "npm run prestart && cross-env NODE_ENV=production nodemon src/index.js --ext js",
+    "test": "jest test"
   },
   "repository": {
     "type": "git",
@@ -21,7 +23,9 @@
   },
   "homepage": "https://github.com/HugoRoca/apirest.elasticsearch.koa#readme",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "axios": "^0.19.2",
+    "cross-env": "^7.0.2",
     "elasticsearch": "^16.7.1",
     "ioredis": "^4.16.1",
     "jest": "^25.2.4",
@@ -41,6 +45,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "rimraf": "^3.0.2"
   }
 }

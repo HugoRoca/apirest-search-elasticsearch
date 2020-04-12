@@ -19,6 +19,7 @@ module.exports = class {
       const categoryService = new CategoryService(categoryModel)
       ctx.body = await categoryService.runCategory()
     } catch (error) {
+      console.log(error)
       ctx.throw = error
     }
   }
