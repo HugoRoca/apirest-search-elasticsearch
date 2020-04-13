@@ -3,6 +3,7 @@ module.exports = class {
     country,
     campaign,
     consultantCode,
+    origin,
     zoneCode,
     cuv,
     codeProduct,
@@ -13,6 +14,7 @@ module.exports = class {
     this.country = country
     this.campaign = campaign
     this.consultantCode = consultantCode
+    this.origin = origin
     this.zoneCode = zoneCode
     this.cuv = cuv
     this.codeProduct = codeProduct

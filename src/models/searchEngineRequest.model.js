@@ -6,6 +6,7 @@ module.exports = class {
     country,
     campaign,
     consultantCode,
+    origin,
     zoneCode,
     searchText,
     personalizations,
@@ -17,6 +18,7 @@ module.exports = class {
     this.country = country
     this.campaign = campaign
     this.consultantCode = consultantCode
+    this.origin = origin
     this.zoneCode = zoneCode
     this.searchText = searchText
     this.personalizationsDummy = personalizations

@@ -2,6 +2,7 @@ module.exports = class {
   constructor (
     country,
     campaign,
+    origin,
     consultantCode,
     zoneCode,
     cuv,
@@ -13,6 +14,7 @@ module.exports = class {
   ) {
     this.country = country
     this.campaign = campaign
+    this.origin = origin
     this.consultantCode = consultantCode
     this.zoneCode = zoneCode
     this.cuv = cuv
