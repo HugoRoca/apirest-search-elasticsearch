@@ -20,8 +20,12 @@ const bodySchema = Joi.object().keys({
     .required(),
   codigoZona: Joi.string()
     .regex(/^\d{4}$/),
-  textoBusqueda: Joi.string().optional(),
-  personalizaciones: Joi.string().optional(),
+  textoBusqueda: Joi
+    .string()
+    .optional(),
+  personalizaciones: Joi
+    .string()
+    .optional(),
   configuracion: {
     sociaEmpresaria: Joi
       .string()
@@ -78,7 +82,28 @@ const bodySchema = Joi.object().keys({
       .valid('asc', 'desc')
       .default('asc')
   },
-  filtro: Joi.any()
+  filtro: Joi.array().items(
+    Joi.object({
+      NombreGrupo: Joi.string(),
+      Opciones: Joi.array().items(
+        Joi.object({
+          IdFiltro: Joi
+            .string()
+            .required(),
+          NombreFiltro: Joi
+            .string()
+            .required(),
+          Cantidad: Joi.number()
+            .integer()
+            .min(1)
+            .default(1),
+          Marcado: Joi
+            .bool()
+            .default(true)
+        })
+      )
+    })
+  )
 })
 
 module.exports = {
