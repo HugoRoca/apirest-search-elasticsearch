@@ -6,10 +6,10 @@
   "scripts": {
     "clean": "rimraf .cache dist reports tmp",
     "lint": "eslint src",
-    "prestart": "npm run clean && npm run lint",
+    "prestart": "npm run clean && npm run lint && npm run test",
     "start": "cross-env NODE_ENV=stage nodemon src/index.js --ext js",
     "start:prd": "npm run prestart && cross-env NODE_ENV=production nodemon src/index.js --ext js",
-    "test": "jest test"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
