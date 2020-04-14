@@ -54,6 +54,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^2.0.2",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "swagger2": "^2.0.0",
+    "swagger2-koa": "^2.0.0"
   }
 }

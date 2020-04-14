@@ -5,11 +5,12 @@ const logger = require('koa-logger')
 const yenv = require('yenv')
 const routes = require('./routes')
 const ElasticsearchManager = require('./utils/elasticsearchManager')
+const docs = require('./utils/api.docs')
 
 const env = yenv()
 const server = new Koa()
 
-server.use(bodyParser()).use(json()).use(logger())
+server.use(bodyParser()).use(json()).use(logger()).use(docs)
 
 routes.map((r) => {
   server.use(r.routes()).use(r.allowedMethods())
