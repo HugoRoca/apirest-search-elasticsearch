@@ -4,6 +4,8 @@ env:
   node: true
 extends:
   - standard
+plugins:
+  - prettier
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
