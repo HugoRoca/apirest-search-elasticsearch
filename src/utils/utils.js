@@ -22,11 +22,10 @@ exports.distinctInArray = (array, key) => {
   }
   return result
 }
-exports.decodeText = str => {
-  return str.replace(/&#(\d+);/g, (match, dec) => {
-    return String.fromCharCode(dec)
-  })
-}
+exports.decodeText = str => str.replace(/&#(\d+);/g, (match, dec) => {
+  return String.fromCharCode(dec)
+})
+
 exports.buildImageUrl = (nameImage, country, originType, campaign, brandId) => {
   const urlSB = env.EXTERNAL_APIS.IMAGES_SB
   const urlAPP = env.EXTERNAL_APIS.IMAGES_APP_CATALOGUE

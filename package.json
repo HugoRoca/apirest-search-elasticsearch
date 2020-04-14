@@ -11,6 +11,10 @@
     "start:prd": "npm run prestart && cross-env NODE_ENV=production nodemon src/index.js --ext js",
     "test": "jest --coverage"
   },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["html"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HugoRoca/apirest.elasticsearch.koa.git"
