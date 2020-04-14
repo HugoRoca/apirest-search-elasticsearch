@@ -2,6 +2,336 @@ swagger: '2.0'
 info:
   title: API Search 2.0 Documentation
   version: '2.0'
+tags:
+  - name: 'buscador'
+    description: 'search for products in elasticsearch according to the indicated text'
+  - name: 'categoria'
+    description: 'search products and group categories'
+  - name: 'personalizacion'
+    description: 'Returns a single string'
+  - name: 'recomendaciones'
+    description: 'Returns a list of products according to the sap'
+  - name: 'upselling'
+    description: 'returns a list of products based on a sap code, it can also show the product you send by cuv'
 schemes:
   - http
   - https
+paths:
+  '/buscador/{country}/{campaign}/{origin}':
+    post:
+      tags:
+        - 'buscador'
+      summary: 'Returns list of products with filter'
+      produces:
+        - application/json
+      parameters:
+        - name: country
+          in: path
+          description: country tow letter iso code
+          required: true
+          type: string
+        - name: campaign
+          in: path
+          description: campaign where the consultant is located
+          required: true
+          type: string
+        - name: origin
+          in: path
+          description: origin of where it is running
+          required: false
+          type: string
+        - name: body
+          in: body
+          description: create search engine object
+          required: true
+          schema:
+            $ref: '#/definitions/BuscadorModel'
+      responses:
+        default:
+          description: successful operation
+  '/categoria/{country}/{campaign}/{origin}':
+    post:
+      tags:
+        - 'categoria'
+      summary: 'returns a list of parent categories with their respective quantities'
+      produces:
+        - application/json
+      parameters:
+        - name: country
+          in: path
+          description: country tow letter iso code
+          required: true
+          type: string
+        - name: campaign
+          in: path
+          description: campaign where the consultant is located
+          required: true
+          type: string
+        - name: origin
+          in: path
+          description: origin of where it is running
+          required: false
+          type: string
+        - name: body
+          in: body
+          description: create search engine object
+          required: true
+          schema:
+            $ref: '#/definitions/CategoriaModel'
+      responses:
+        default:
+          description: successful operation
+  '/personalizacion/{country}/{campaign}/{codeConsultant}/{origin}':
+    get:
+      tags:
+        - 'personalizacion'
+      summary: 'returns string with personalization associate'
+      produces:
+        - application/json
+      parameters:
+        - name: country
+          in: path
+          description: country tow letter iso code
+          required: true
+          type: string
+        - name: campaign
+          in: path
+          description: campaign where the consultant is located
+          required: true
+          type: string
+        - name: codeConsultant
+          in: path
+          description: code of consultant
+          required: true
+          type: string
+        - name: origin
+          in: path
+          description: origin of where it is running
+          required: false
+          type: string
+      responses:
+        default:
+          description: successful operation
+  '/recomendaciones/{country}/{campaign}/{origin}':
+    post:
+      tags:
+        - 'recomendaciones'
+      summary: 'Returns a list of products according to the sap'
+      produces:
+        - application/json
+      parameters:
+        - name: country
+          in: path
+          description: country tow letter iso code
+          required: true
+          type: string
+        - name: campaign
+          in: path
+          description: campaign where the consultant is located
+          required: true
+          type: string
+        - name: origin
+          in: path
+          description: origin of where it is running
+          required: false
+          type: string
+        - name: body
+          in: body
+          description: create search engine object
+          required: true
+          schema:
+            $ref: '#/definitions/RecomendacionModel'
+      responses:
+        default:
+          description: successful operation
+  '/upselling/{country}/{campaign}/{origin}':
+    post:
+      tags:
+        - 'upselling'
+      summary: 'returns a list of products based on a sap code, it can also show the product you send by cuv'
+      produces:
+        - application/json
+      parameters:
+        - name: country
+          in: path
+          description: country tow letter iso code
+          required: true
+          type: string
+        - name: campaign
+          in: path
+          description: campaign where the consultant is located
+          required: true
+          type: string
+        - name: origin
+          in: path
+          description: origin of where it is running
+          required: false
+          type: string
+        - name: body
+          in: body
+          description: create search engine object
+          required: true
+          schema:
+            $ref: '#/definitions/UpsellingModel'
+      responses:
+        default:
+          description: successful operation
+definitions:
+  UpsellingModel:
+    type: "object"
+    properties:
+      codigoConsultora:
+        type: "string"
+      codigoZona:
+        type: "string"
+      cuv:
+        type: "string"
+      codigoProducto:
+        type: "array"
+        items:
+          type: "string"
+      precioProducto:
+        type: "number"
+      cantidadProductos:
+        type: "integer"
+        format: "int32"
+      personalizaciones:
+        type: "string"
+      configuracion:
+        properties:
+          sociaEmpresaria:
+            type: "string"
+          suscripcionActiva:
+            type: "string"
+          mdo:
+            type: "string"
+          rd:
+            type: "string"
+          rdi:
+            type: "string"
+          rdr:
+            type: "string"
+          diaFacturacion:
+            type: "integer"
+            format: "int32"
+          esFacturacion:
+            type: "boolean"
+  RecomendacionModel:
+    type: "object"
+    properties:
+      codigoConsultora:
+        type: "string"
+      codigoZona:
+        type: "string"
+      cuv:
+        type: "string"
+      codigoProducto:
+        type: "array"
+        items:
+          type: "string"
+      cantidadProductos:
+        type: "integer"
+        format: "int32"
+      personalizaciones:
+        type: "string"
+      configuracion:
+        properties:
+          sociaEmpresaria:
+            type: "string"
+          suscripcionActiva:
+            type: "string"
+          mdo:
+            type: "string"
+          rd:
+            type: "string"
+          rdi:
+            type: "string"
+          rdr:
+            type: "string"
+          diaFacturacion:
+            type: "integer"
+            format: "int32"
+          mostrarProductoConsultado:
+            type: "string"
+          esFacturacion:
+            type: "boolean"
+  CategoriaModel:
+    type: 'object'
+    properties:
+      codigoConsultora:
+        type: 'string'
+      codigoZona:
+        type: 'string'
+      personalizaciones:
+        type: 'string'
+      configuracion:
+        properties:
+          sociaEmpresaria:
+            type: 'string'
+          suscripcionActiva:
+            type: 'string'
+          mdo:
+            type: 'string'
+          rd:
+            type: 'string'
+          rdi:
+            type: 'string'
+          rdr:
+            type: 'string'
+          diaFacturacion:
+            type: 'integer'
+            format: 'int32'
+  BuscadorModel:
+    type: 'object'
+    properties:
+      codigoConsultora:
+        type: 'string'
+      codigoZona:
+        type: 'string'
+      textoBusqueda:
+        type: 'string'
+      personalizaciones:
+        type: 'string'
+      configuracion:
+        properties:
+          sociaEmpresaria:
+            type: 'string'
+          suscripcionActiva:
+            type: 'string'
+          mdo:
+            type: 'string'
+          rd:
+            type: 'string'
+          rdi:
+            type: 'string'
+          rdr:
+            type: 'string'
+          diaFacturacion:
+            type: 'integer'
+            format: 'int32'
+          esFacturacion:
+            type: 'boolean'
+      paginacion:
+        properties:
+          numeroPagina:
+            type: 'integer'
+            format: 'int32'
+      orden:
+        properties:
+          campo:
+            type: 'string'
+          tipo:
+            type: 'string'
+      filtro:
+        type: 'array'
+        items:
+          type: 'object'
+          properties:
+            idFiltro:
+              type: 'string'
+            nombreFiltro:
+              type: 'string'
+            marcado:
+              type: 'string'
+            idSeccion:
+              type: 'string'
