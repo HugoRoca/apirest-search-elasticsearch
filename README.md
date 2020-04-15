@@ -3,10 +3,6 @@ APIREST service performed for elasticsearch queries
 
 ![](https://thirtybees.com/wp-content/uploads/2017/10/icon-elasticsearch-bb.svg.png)![](https://cdn.iconscout.com/icon/free/png-256/node-js-1174925.png)
 
-**Table of Contents**
-
-[TOC]
-
 # Project structure
 ![](https://i.imgur.com/fFGSgwl.png)
 
