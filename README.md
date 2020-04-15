@@ -1,12 +1,10 @@
 # API REST Search
 APIREST service performed for elasticsearch queries
 
-![](https://thirtybees.com/wp-content/uploads/2017/10/icon-elasticsearch-bb.svg.png)![](https://cdn.iconscout.com/icon/free/png-256/node-js-1174925.png)
-
-# Project structure
+## Project structure
 ![](https://i.imgur.com/fFGSgwl.png)
 
-# Installation and Usage
+## Installation and Usage
 Prerequisites: [Node.js](https://nodejs.org/) (`^10.12.0`, or `>=12.0.0`) built with SSL support. (If you are using an official Node.js distribution, SSL is always built in.)
 You can install packages:
 ```
