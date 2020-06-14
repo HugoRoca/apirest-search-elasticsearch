@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const utils = require('../../src/utils/utils')
+const utils = require('../../../src/utils/utils')
 const yenv = require('yenv')
 const env = yenv()
 

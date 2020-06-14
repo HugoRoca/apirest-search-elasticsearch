@@ -1,0 +1,10 @@
+{
+  "restartable": "rs",
+  "ignore": [".git", "node_modules", "dist", "reports", "test"],
+  "verbose": true,
+  "watch": ["src/"],
+  "env": {
+    "NODE_ENV": "stage"
+  },
+  "ext": "js json gql yml"
+}
