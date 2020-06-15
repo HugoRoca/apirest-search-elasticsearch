@@ -22,6 +22,8 @@ $ npm run start
 ```
 ## Test
 
-Run in console: `npm run test`, the coverage default is 80%
+Run in console: `npm run test`, the coverage default is 80%.
+
+We can see the coverage file in `./reports/coverage/index.html`
 
 ![test-image](./test-image.png)
