@@ -6,6 +6,7 @@ const yenv = require('yenv')
 const routes = require('./routes')
 const ElasticsearchManager = require('./utils/elasticsearchManager')
 const docs = require('./utils/api.docs')
+const log = require('fancy-log')
 
 const env = yenv()
 const server = new Koa()
@@ -20,19 +21,17 @@ if (env.NODE_ENV !== 'test') {
   ElasticsearchManager.createConnectionPool()
     .then(
       () => {
-        console.log('All connections were successful')
+        log.info('All connections were successful')
         server.listen(env.PORT, () => {
-          console.log(`Listening on port: ${env.PORT}`)
+          log.info(`Listening on port: ${env.PORT}`)
         })
       },
       () => {
-        console.log(
-          'Application not started because at least one connectionString was unsuccessful...'
-        )
+        log.error('Application not started because at least one connectionString was unsuccessful...')
       }
     )
     .catch((err) => {
-      console.log(err)
+      log.error(err)
     })
 }
 

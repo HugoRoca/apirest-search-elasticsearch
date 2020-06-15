@@ -1,5 +1,6 @@
 const IoRedis = require('ioredis')
 const yenv = require('yenv')
+const log = require('fancy-log')
 const env = yenv()
 
 class CacheManager {
@@ -24,11 +25,11 @@ class CacheManager {
     })
 
     client.on('connect', () => {
-      console.log('Conectado a redis')
+      log.info('Conectado a redis')
     })
 
     client.on('error', err => {
-      console.error('Redis error ' + err)
+      log.error('Redis error ' + err)
     })
 
     return client

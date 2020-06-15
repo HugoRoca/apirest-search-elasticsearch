@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 const Elasticsearch = require('elasticsearch')
 const yenv = require('yenv')
+const log = require('fancy-log')
 const env = yenv()
 
 class ElasticsearchManager {
@@ -37,7 +38,7 @@ class ElasticsearchManager {
         this.connection[clusterId] = Elasticsearch.Client({
           host: endPoint
         })
-        console.log(`Successfull connection to elasticsearch => ${clusterId} ✓`)
+        log.info(`Successfull connection to elasticsearch => ${clusterId} ✓`)
         resolve(this.connection[clusterId])
       }
     })

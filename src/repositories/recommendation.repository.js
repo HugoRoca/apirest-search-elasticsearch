@@ -1,4 +1,4 @@
-const BuildQuery = require('../scripts/elasticsearch/buildQuery')
+const BuildQuery = require('../queries/elasticsearch/buildQuery')
 const ElasticsearchManager = require('../utils/elasticsearchManager')
 
 module.exports = class {

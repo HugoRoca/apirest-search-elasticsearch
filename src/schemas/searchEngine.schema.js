@@ -21,8 +21,7 @@ const bodySchema = Joi.object().keys({
   codigoZona: Joi.string()
     .regex(/^\d{4}$/),
   textoBusqueda: Joi
-    .string()
-    .optional(),
+    .string(),
   personalizaciones: Joi
     .string()
     .optional(),

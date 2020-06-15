@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-const _ = require('lodash')
+const { isUndefined } = require('lodash')
 
 module.exports = class {
   constructor (
@@ -20,7 +20,7 @@ module.exports = class {
     this.consultantCode = consultantCode
     this.origin = origin
     this.zoneCode = zoneCode
-    this.searchText = searchText
+    this.searchText = searchText || ''
     this.personalizationsDummy = personalizations
     this.configurations = {
       businessPartner: configurations.sociaEmpresaria,
@@ -49,9 +49,9 @@ module.exports = class {
 
   get sortValue () {
     if (
-      _.isUndefined(this.order.field) ||
+      isUndefined(this.order.field) ||
       this.order.field === '' ||
-      _.isUndefined(this.order.type) ||
+      isUndefined(this.order.type) ||
       this.order.type === ''
     ) return false
 
