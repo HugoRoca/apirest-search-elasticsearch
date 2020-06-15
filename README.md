@@ -18,6 +18,10 @@ Then execute the following to run the project
 // for dev
 $ npm start
 // for production
-$ npm run start:prd
+$ npm run start
 ```
 ## Test
+
+Run in console: `npm run test`, the coverage default is 80%
+
+![test-image](./test-image.png)
